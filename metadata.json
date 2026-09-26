@@ -1,0 +1,6 @@
+{
+  "name": "ResumeForge",
+  "description": "ATS-friendly resume builder with live preview, job description matching, and professional export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
