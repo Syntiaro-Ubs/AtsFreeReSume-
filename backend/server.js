@@ -76,8 +76,15 @@ app.use((error, _req, res, _next) => {
 });
 
 const port = Number(process.env.PORT || 5000);
-const server = app.listen(port, "0.0.0.0", () => {
+const server = app.listen(port, "0.0.0.0", async () => {
   console.log(`Resume Maker API listening on http://localhost:${port}`);
+  try {
+    const conn = await pool.getConnection();
+    console.log(`✅ Database connected successfully: ${process.env.DB_NAME || "resume_builder"} on ${process.env.DB_HOST || "localhost"}:${process.env.DB_PORT || 3306}`);
+    conn.release();
+  } catch (err) {
+    console.error(`❌ Database connection failed:`, err.message);
+  }
 });
 
 async function shutdown() {

@@ -148,9 +148,11 @@ async function handlePayUSuccess(req, res, next) {
       udf5 = "",
       mihpayid,
       payuMoneyId,
-      additionalCharges,
+      additionalCharges: rawCharges,
+      additional_charges: snakeCharges,
     } = req.body;
 
+    const additionalCharges = rawCharges || snakeCharges || "";
     const resumeId = Number(udf1);
     const userId = Number(udf2);
     const gatewayRef = mihpayid || payuMoneyId || txnid;
@@ -301,27 +303,34 @@ async function getPaymentStatus(req, res, next) {
 
 // Helper to render HTML popup response
 function renderResponseHtml(isSuccess, message, resumeId) {
+  const frontendUrl = process.env.APP_URL || "http://localhost:5173";
   return `
     <!DOCTYPE html>
     <html>
     <head><title>${isSuccess ? "Payment Successful" : "Payment Failed"}</title></head>
-    <body style="font-family: system-ui, sans-serif; text-align: center; padding: 40px; background: #F8FAFC;">
-      <div style="max-w: 400px; margin: auto; background: white; padding: 30px; border-radius: 16px; border: 1px solid #E2E8F0;">
-        <h2 style="color: ${isSuccess ? "#10B981" : "#EF4444"}; margin-bottom: 10px;">
+    <body style="font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 40px; background: #F8FAFC;">
+      <div style="max-width: 420px; margin: 40px auto; background: white; padding: 32px; border-radius: 16px; border: 1px solid #E2E8F0; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);">
+        <h2 style="color: ${isSuccess ? "#10B981" : "#EF4444"}; margin-bottom: 10px; font-size: 20px;">
           ${isSuccess ? "✔ Payment Verified (₹99)" : "❌ Payment Failed"}
         </h2>
-        <p style="color: #475569; font-size: 14px;">${message}</p>
-        <p style="color: #94A3B8; font-size: 12px; margin-top: 20px;">Closing window and returning to ResumeForge...</p>
+        <p style="color: #475569; font-size: 14px; line-height: 1.5;">${message}</p>
+        <p style="color: #94A3B8; font-size: 12px; margin-top: 20px;">Returning to ResumeForge...</p>
       </div>
       <script>
-        if (window.opener) {
-          window.opener.postMessage({
-            type: '${isSuccess ? "PAYU_PAYMENT_SUCCESS" : "PAYU_PAYMENT_FAILED"}',
-            resumeId: '${resumeId || ""}'
-          }, '*');
-          setTimeout(function() { window.close(); }, 1200);
-        } else {
-          window.location.href = '/builder?id=${resumeId || ""}&payment=${isSuccess ? "success" : "failed"}';
+        try {
+          if (window.opener && !window.opener.closed) {
+            window.opener.postMessage({
+              type: '${isSuccess ? "PAYU_PAYMENT_SUCCESS" : "PAYU_PAYMENT_FAILED"}',
+              resumeId: '${resumeId || ""}'
+            }, '*');
+            setTimeout(function() { window.close(); }, 1200);
+          } else {
+            setTimeout(function() {
+              window.location.href = '${frontendUrl}/builder?id=${resumeId || ""}&payment=${isSuccess ? "success" : "failed"}';
+            }, 1200);
+          }
+        } catch (e) {
+          window.location.href = '${frontendUrl}/builder?id=${resumeId || ""}&payment=${isSuccess ? "success" : "failed"}';
         }
       </script>
     </body>

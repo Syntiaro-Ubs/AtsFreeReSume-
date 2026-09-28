@@ -224,8 +224,17 @@ export const PaymentModal = ({ isOpen, onClose, onSuccess }) => {
                     _jsx("p", { className: "text-xs font-bold text-slate-800", children: "Pay via PayU Official Secure Payment Gateway" }),
                     _jsx("p", { className: "text-[11px] text-slate-600 leading-relaxed", children: "Supports Google Pay, PhonePe, Paytm, BHIM, Credit/Debit Cards, NetBanking & Wallets." }),
                     
+                    _jsxs("div", { className: "p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs text-left space-y-1.5", children: [
+                        _jsxs("div", { className: "flex items-center space-x-1.5 font-bold text-amber-800", children: [
+                            _jsx("span", { className: "w-2 h-2 rounded-full bg-amber-500 animate-pulse" }),
+                            _jsx("span", { children: "PayU Test / Sandbox Mode Active" })
+                        ] }),
+                        _jsx("p", { className: "text-[11px] text-amber-700 leading-normal", children: "No real money will be charged. On the PayU test checkout page, you can choose any payment method and click simulate Success to unlock your download." })
+                    ] }),
+                    
                     _jsxs("div", { className: "p-3 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-900 text-xs text-left space-y-1 font-mono", children: [
-                        _jsxs("div", { className: "flex justify-between", children: [_jsx("span", { children: "Amount:" }), _jsx("span", { className: "font-bold text-emerald-700", children: "₹99.00 INR" })] }),
+                        _jsxs("div", { className: "flex justify-between", children: [_jsx("span", { children: "Amount:" }), _jsx("span", { className: "font-bold text-emerald-700", children: "₹99.00 INR (Test)" })] }),
+                        _jsxs("div", { className: "flex justify-between", children: [_jsx("span", { children: "Gateway Environment:" }), _jsx("span", { className: "font-bold text-amber-600", children: "TEST (test.payu.in)" })] }),
                         _jsxs("div", { className: "flex justify-between", children: [_jsx("span", { children: "Hash Security:" }), _jsx("span", { className: "font-bold text-slate-900", children: "SHA-512 Backend Encrypted" })] })
                     ] })
                 ] })
